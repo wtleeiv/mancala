@@ -169,9 +169,11 @@
         removed-source-well-board (empty-well (:board game) player well)
         moves (move-seq game player well pieces)
         placed-pieces-board (place-pieces removed-source-well-board moves)]
-    (update-game (assoc game :board placed-pieces-board)
-                 player
-                 (last moves))))
+    (if (> pieces 0)
+      (update-game (assoc game :board placed-pieces-board)
+                   player
+                   (last moves))
+      game)))
 
 
 (defn render-well
@@ -243,10 +245,24 @@
        (letter->num)
        (move game (:player-to-move game))))
 
+(defn score
+  [[player {:keys [mancala wells]}]]
+  (let [score (reduce + mancala wells)]
+    [player score]))
+
+(defn report-scores
+  [game]
+  (let [scores (map score (:board game))]
+    (doseq [score scores]
+      (println (str "Player " (first score) ": " (second score))))
+    (let [winner (first (apply max-key second scores))]
+      (println "Player" winner "wins!"))))
+
 (defn play-game
   [game]
   (println)
   (if (:game-over game)
-    (println "Game over")
+    (do (println "Game over")
+        (report-scores game))
     (do (render-board! game)
         (recur (prompt-move game)))))
