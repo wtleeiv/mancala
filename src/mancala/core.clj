@@ -144,9 +144,19 @@
     game ; no :player-to-move update req'd
     (update-player-to-move (maybe-capture game last-move))))
 
+(defn all-wells-empty
+  [wells]
+  (not (some #(not= 0 %)
+             wells)))
+
 (defn check-game-over
   [game]
-  game)
+  (if (some all-wells-empty
+            (map (fn [player]
+                   (get-in game [:board player :wells]))
+                 (:players game)))
+    (assoc game :game-over true)
+    game))
 
 (defn update-game
   "handle capture/move again/game over logic"
