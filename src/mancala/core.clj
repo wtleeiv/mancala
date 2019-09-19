@@ -77,3 +77,8 @@
               (assoc-in board well-acc (inc well-contents))))
           board
           wells))
+
+(defn move
+  [game player well]
+  (let [board (place-pieces (:board game) (board-seq game player well))]
+    (empty-well board player well)))
