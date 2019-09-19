@@ -172,3 +172,81 @@
     (update-game (assoc game :board placed-pieces-board)
                  player
                  (last moves))))
+
+
+(defn render-well
+  "two-char string"
+  [well]
+  (let [str-rep (str well)]
+    (if (> (count str-rep) 1)
+      str-rep
+      (str " " str-rep))))
+
+(defn render-side
+  [side]
+  (let [wells (map render-well (:wells side))
+        divider (cons " |" wells)
+        side (cons (render-well (:mancala side)) divider)]
+    side))
+
+(defn pad-entries
+  [sq]
+  (clojure.string/join " " sq))
+
+(defn render-opponent
+  [side]
+  (pad-entries (render-side side)))
+
+(def player-pad "      ")
+
+(defn render-player
+  [side]
+  (str player-pad (pad-entries (reverse (render-side side)))))
+
+(defn render-board!
+  [game]
+  (let [opponent-sides (reverse (map #(get-in game [:board %])
+                                     (sorted-opponents game)))
+        player-side (get-in game [:board (:player-to-move game)])
+        opponent-lines (map render-opponent opponent-sides)
+        player-line (render-player player-side)]
+    (doseq [line (concat opponent-lines (list player-line))]
+      (println line))))
+
+(def alpha-start 97)
+
+(defn num->letter
+  [n]
+  (char (+ n alpha-start)))
+
+(defn letter->num
+  [letter]
+  (- (int letter)
+     alpha-start))
+
+(defn get-letter
+  []
+  (->> (read-line)
+       (clojure.string/trim)
+       (clojure.string/lower-case)
+       (first)))
+
+(defn prompt-move
+  [game]
+  (println (str player-pad
+                (pad-entries (map (comp render-well num->letter)
+                                  (reverse (range (:num-wells game)))))))
+  (println "Which well would you like to move, Player"
+           (:player-to-move game)
+           "?:")
+  (->> (get-letter)
+       (letter->num)
+       (move game (:player-to-move game))))
+
+(defn play-game
+  [game]
+  (println)
+  (if (:game-over game)
+    (println "Game over")
+    (do (render-board! game)
+        (recur (prompt-move game)))))
