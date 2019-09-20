@@ -1,11 +1,6 @@
 (ns mancala.core
   (:gen-class))
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (println "Hello, World!"))
-
 (defn make-board
   [num-players num-wells num-pieces-per-well]
   (reduce (fn [board player-number]
@@ -266,3 +261,8 @@
         (report-scores game))
     (do (render-board! game)
         (recur (prompt-move game)))))
+
+(defn -main
+  "Play mancala"
+  [& args]
+  (play-game (default-game)))

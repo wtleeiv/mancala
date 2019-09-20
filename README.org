@@ -1,0 +1,7 @@
+** Mancala
+
+Play mancala with your friends
+
+*** Usage
+
+~java -jar mancala-0.1.0-SNAPSHOT-standalone.jar~
