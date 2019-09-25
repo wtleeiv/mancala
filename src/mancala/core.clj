@@ -129,7 +129,9 @@
   (let [well-owner (move-owner last-move)
         well (move-well last-move)]
     (if (and (= well-owner (:player-to-move game))
-             (= 1 (well-pieces (:board game) well-owner well)))
+             (= 1 (well-pieces (:board game) well-owner well))
+             (some (partial < 0) (map (partial get-in (:board game))
+                                      (linked-wells game last-move))))
       (capture-pieces game last-move)
       game)))
 
