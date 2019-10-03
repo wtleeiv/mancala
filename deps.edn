@@ -1,3 +1,8 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.10.0"}}
- :aliases {:run {:main-opts ["-m" "mancala.core"]}}}
+ :aliases {:run {:main-opts ["-m" "mancala.core"]}
+           :test {:extra-paths ["test"]
+                  :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-554"}}
+                  :main-opts ["-m" "kaocha.runner"]}
+           :uberjar {:extra-deps {luchiniatwork/cambada {:mvn/version "1.0.0"}}
+                     :main-opts ["-m" "cambada.uberjar" "-m" "mancala.core"]}}}
